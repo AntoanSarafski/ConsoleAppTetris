@@ -1,11 +1,15 @@
 ﻿class Program
 {
+    // Settings for the Tetris game
+
     static int TetrisRows = 20;
     static int TetrisCols = 10;
     static int InfoCols = 10;
     static int ConsoleRows = 1 + TetrisRows + 1;
     static int ConsoleCols = 1 + TetrisCols + 1 + InfoCols + 1;
 
+    // State
+    static int Score = 0;
 
 
     static void Main(string[] args)
@@ -17,9 +21,13 @@
         Console.WindowWidth = ConsoleCols;
         Console.BufferHeight = ConsoleRows + 1;
         Console.BufferWidth = ConsoleCols;
+        Console.CursorVisible = false;
         DrawBorder();
+        DrawInfo();
         Console.ReadLine();
     }
+
+
 
     static void DrawBorder()
     {
@@ -56,13 +64,24 @@
 
 
     }
+
+    static void DrawInfo()
+    {
+        Write("Score:", 1, 3 + TetrisCols);
+        Write(Score.ToString(), 2, 3 + TetrisCols);
+
+    }
+
+
     static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.Yellow)
     {
         Console.ForegroundColor = color;
         Console.SetCursorPosition(col, row);
-        Console.WriteLine("Hello, " + text);
+        Console.Write(text);
         Console.ResetColor();
     }
+
+
 }
 
 
