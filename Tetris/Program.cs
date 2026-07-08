@@ -71,7 +71,7 @@ class Program
         DrawInfo();
         while (true)
         {
-
+            Frame++;
 
             if (Console.KeyAvailable)
             {
@@ -109,7 +109,6 @@ class Program
                 {
                     CurrentFigureRow++;
                     Frame = 0;
-                    Score++;
 
                 }
 
@@ -127,7 +126,6 @@ class Program
                 DrawBorder(); DrawInfo();
                 DrawCurrentFigure();
 
-                Frame++;
                 Thread.Sleep(40);
             }
         }
