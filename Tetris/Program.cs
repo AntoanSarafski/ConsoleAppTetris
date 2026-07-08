@@ -51,7 +51,7 @@ class Program
     static int Score = 0;
     static int Frame = 0;
     static int FramesToMoveFigure = 15;
-    static int CurrentFigureIndex = 2;  // TODO: Must be random
+    static bool[,] CurrentFigure = TetrisFigures[2]; // Must be random
     static int CurrentFigureRow = 0;
     static int CurrentFigureCol = 0;
     static bool[,] TetrisField = new bool[TetrisRows, TetrisCols];
@@ -82,21 +82,27 @@ class Program
                 }
                 if (key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.A)
                 {
-                    // TODO: Move current figure left
-                    CurrentFigureCol--; // TODO: Out of range check
+                    
+                    if(CurrentFigureCol > 0)
+                    {
+                        CurrentFigureCol--; 
+                    }
                 }
                 if (key.Key == ConsoleKey.RightArrow || key.Key == ConsoleKey.D)
                 {
-                    // TODO: Move current figure right
-                    CurrentFigureCol++; // TODO: Out of range check
+                    if(CurrentFigureCol < TetrisCols - CurrentFigure.GetLength(1))
+                    {
+                       CurrentFigureCol++; 
+                    }
 
                 }
                 if (key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.S)
                 {
+                    // Check if the current figure can move down
                     Frame = 1;
                     Score++;
                     CurrentFigureRow++;
-                    // TODO: Move current figure down
+                    
                 }
                 if (key.Key == ConsoleKey.Spacebar || key.Key == ConsoleKey.UpArrow)
                 {
@@ -175,16 +181,21 @@ class Program
             Write(Score.ToString(), 2, 3 + TetrisCols);
             Write("Frame:", 4, 3 + TetrisCols);
             Write(Frame.ToString(), 5, 3 + TetrisCols);
-        }
+            Write("Position:", 7, 3 + TetrisCols);
+            Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 8, 3 + TetrisCols);
+            Write("Keys:", 10, 3 + TetrisCols);
+            Write(" ^ ".ToString(), 11, 3 + TetrisCols);
+            Write("<v> ".ToString(), 12, 3 + TetrisCols);
 
-        static void DrawCurrentFigure()
+    }
+
+    static void DrawCurrentFigure()
         {
-            var currentFigure = TetrisFigures[CurrentFigureIndex];
-            for (int row = 0; row < currentFigure.GetLength(0); row++)
+            for (int row = 0; row < CurrentFigure.GetLength(0); row++)
             {
-                for (int col = 0; col < currentFigure.GetLength(1); col++)
+                for (int col = 0; col < CurrentFigure.GetLength(1); col++)
                 {
-                    if (currentFigure[row, col])
+                    if (CurrentFigure[row, col])
                     {
                         Write("█", CurrentFigureRow + row + 1, CurrentFigureCol + col + 1);
                     }
@@ -193,7 +204,7 @@ class Program
         }
 
 
-        static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.Yellow)
+        static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.DarkRed)
         {
             Console.ForegroundColor = color;
             Console.SetCursorPosition(col, row);
