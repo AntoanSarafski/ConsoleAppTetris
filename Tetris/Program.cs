@@ -127,6 +127,18 @@ class Program
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 CurrentFigureRow = 0;
                 CurrentFigureCol = 0;
+                if (Collision())
+                {
+                    var scoreAsString = Score.ToString();
+                    scoreAsString += new string(' ',4 - scoreAsString.Length);
+                    Write("╔════════════╗", 5, 5);
+                    Write("║  Game      ║", 6, 5);
+                    Write("║   Over!    ║", 7, 5);
+                    Write("║Score:      ║", 8, 5);
+                    Write($"║ {scoreAsString}       ║", 9, 5);
+                    Write("╚════════════╝", 10, 5);
+                    Console.ReadKey();
+                }
             }
 
 
@@ -259,14 +271,14 @@ class Program
             {
                 if (CurrentFigure[row, col])
                 {
-                    Write("█", CurrentFigureRow + row + 1, CurrentFigureCol + col + 1);
+                    Write("█", CurrentFigureRow + row + 1, CurrentFigureCol + col + 1, ConsoleColor.DarkRed);
                 }
             }
         }
     }
 
 
-    static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.DarkRed)
+    static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.Yellow)
     {
         Console.ForegroundColor = color;
         Console.SetCursorPosition(col, row);
