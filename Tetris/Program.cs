@@ -1,4 +1,5 @@
-﻿using System.Transactions;
+﻿using System.Text.RegularExpressions;
+using System.Transactions;
 
 class Program
 {
@@ -45,6 +46,7 @@ class Program
                     { true, true, true }
                 }
         };
+    static string ScoresFileName = "scores.txt";
 
 
     // State
@@ -60,6 +62,17 @@ class Program
 
     static void Main(string[] args)
     {
+        var highscore = 0;
+        if (File.Exists(ScoresFileName))
+        {
+            var allScores = File.ReadAllLines(ScoresFileName);
+            foreach(var score in allScores)
+            {
+                var match = Regex.Match(score, @" => (?<score>[0-9]+)");
+                highscore = Math.Max(highscore, int.Parse(match.Groups["score"].Value));
+            }
+        }
+
         Console.Title = "Tetris v1.0";
         Console.CursorVisible = false;
         Console.WindowHeight = ConsoleRows + 1;
@@ -129,6 +142,10 @@ class Program
                 CurrentFigureCol = 0;
                 if (Collision())
                 {
+                    File.AppendAllLines(ScoresFileName, new List<string>
+                    {
+                        $"[{DateTime.Now.ToString()}] {Environment.UserName} => {Score}"
+                    });
                     var scoreAsString = Score.ToString();
                     scoreAsString += new string(' ',4 - scoreAsString.Length);
                     Write("╔════════════╗", 5, 5);
@@ -137,7 +154,8 @@ class Program
                     Write("║Score:      ║", 8, 5);
                     Write($"║ {scoreAsString}       ║", 9, 5);
                     Write("╚════════════╝", 10, 5);
-                    Console.ReadKey();
+                    Thread.Sleep(100000);
+                    return;
                 }
             }
 
