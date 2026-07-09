@@ -50,6 +50,7 @@ class Program
 
 
     // State
+    static int HighScore = 0;
     static int Score = 0;
     static int Frame = 0;
     static int FramesToMoveFigure = 15;
@@ -62,14 +63,13 @@ class Program
 
     static void Main(string[] args)
     {
-        var highscore = 0;
         if (File.Exists(ScoresFileName))
         {
             var allScores = File.ReadAllLines(ScoresFileName);
             foreach(var score in allScores)
             {
                 var match = Regex.Match(score, @" => (?<score>[0-9]+)");
-                highscore = Math.Max(highscore, int.Parse(match.Groups["score"].Value));
+                HighScore = Math.Max(HighScore, int.Parse(match.Groups["score"].Value));
             }
         }
 
@@ -250,15 +250,22 @@ class Program
 
     static void DrawInfo()
     {
+        if(Score > HighScore)
+        {
+            HighScore = Score;
+        }
+
         Write("Score:", 1, 3 + TetrisCols);
         Write(Score.ToString(), 2, 3 + TetrisCols);
-        Write("Frame:", 4, 3 + TetrisCols);
-        Write(Frame.ToString(), 5, 3 + TetrisCols);
-        Write("Position:", 7, 3 + TetrisCols);
-        Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 8, 3 + TetrisCols);
-        Write("Keys:", 10, 3 + TetrisCols);
-        Write(" ^ ".ToString(), 11, 3 + TetrisCols);
-        Write("<v> ".ToString(), 12, 3 + TetrisCols);
+        Write("Best:", 4, 3 + TetrisCols);
+        Write(HighScore.ToString(), 5, 3 + TetrisCols);
+        Write("Frame:", 7, 3 + TetrisCols);
+        Write(Frame.ToString(), 8, 3 + TetrisCols);
+        Write("Position:", 10, 3 + TetrisCols);
+        Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 11, 3 + TetrisCols);
+        Write("Keys:", 12, 3 + TetrisCols);
+        Write(" ^ ".ToString(), 13, 3 + TetrisCols);
+        Write("<v> ".ToString(), 14, 3 + TetrisCols);
 
     }
 
