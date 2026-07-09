@@ -165,6 +165,19 @@ class Program
         {
             return true;
         }
+
+        for (int row = 0; row < CurrentFigure.GetLength(0); row++)
+        {
+            for (int col = 0; col < CurrentFigure.GetLength(1); col++)
+            {
+                if (CurrentFigure[row, col] && 
+                    TetrisField[CurrentFigureRow + row + 1, CurrentFigureCol + col])
+                {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
