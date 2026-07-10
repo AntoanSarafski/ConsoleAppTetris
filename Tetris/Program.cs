@@ -47,6 +47,7 @@ class Program
                 }
         };
     static string ScoresFileName = "scores.txt";
+    static int[] ScorePerLines = { 0, 40, 100, 300, 1200 }; // Score for clearing 0, 1, 2, 3, or 4 lines
 
 
     // State
@@ -133,8 +134,8 @@ class Program
             if (Collision())
             {
                 AddCurrentFigureToTetrisField();
-
-                //CheckForFullLines();
+                int lines = CheckForFullLines();
+                Score += ScorePerLines[lines];
                 //if(lines remove) Score++;
 
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
@@ -170,7 +171,39 @@ class Program
         }
     }
 
+    static int CheckForFullLines() // 1, 2, 3, 4
+    {
+        int lines = 0;
+        
+        for(int row = 0; row < TetrisField.GetLength(0); row++)
+        {
+            bool rowIsFull = true;
+            for (int col = 0; col < TetrisField.GetLength(1); col++)
+            {
+                if (TetrisField[row, col] == false)
+                {
+                    rowIsFull = false;
+                    break;
+                }
+            }
 
+            if (rowIsFull)
+            {
+                for (int rowToMove = row; rowToMove >= 1; rowToMove--)
+                {
+                    for (int col = 0; col < TetrisField.GetLength(1); col++)
+                    {
+                        TetrisField[rowToMove, col] = TetrisField[rowToMove - 1, col];
+                    }
+                }
+
+                lines++;
+
+            }
+        }
+
+        return lines;
+    }
 
     private static void AddCurrentFigureToTetrisField()
     {
@@ -248,7 +281,7 @@ class Program
 
     }
 
-    static void DrawInfo()
+    static void DrawInfo() 
     {
         if(Score > HighScore)
         {
