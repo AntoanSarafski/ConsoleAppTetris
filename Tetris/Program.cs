@@ -370,19 +370,13 @@ class Program
     {
         for (int row = 0; row < CurrentFigure.GetLength(0); row++)
         {
-            string line = "";
             for (int col = 0; col < CurrentFigure.GetLength(1); col++)
             {
                 if (CurrentFigure[row, col])
                 {
-                    line += "█";
-                }
-                else
-                {
-                    line += " ";
+                    Write("█", row + 1 + CurrentFigureRow, 1 + CurrentFigureCol + col);
                 }
             }
-            Write(line, row + 1 + CurrentFigureRow, CurrentFigureCol + 1);
         }
     }
 
