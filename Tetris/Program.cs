@@ -64,6 +64,7 @@ class Program
 
     static void Main(string[] args)
     {
+
         if (File.Exists(ScoresFileName))
         {
             var allScores = File.ReadAllLines(ScoresFileName);
@@ -73,7 +74,7 @@ class Program
                 HighScore = Math.Max(HighScore, int.Parse(match.Groups["score"].Value));
             }
         }
-
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.Title = "Tetris v1.0";
         Console.CursorVisible = false;
         Console.WindowHeight = ConsoleRows + 1;
@@ -163,10 +164,10 @@ class Program
 
             // redraw UI
 
-            DrawBorder(); DrawInfo();
-            DrawCurrentFigure();
-
+            DrawBorder(); 
+            DrawInfo();
             DrawTetrisField();
+            DrawCurrentFigure();
             Thread.Sleep(40);
         }
     }
@@ -306,18 +307,20 @@ class Program
     {
         for (int row = 0; row < TetrisRows; row++)
         {
+            string line = "";
             for (int col = 0; col < TetrisCols; col++)
             {
                 if (TetrisField[row, col])
                 {
-                    Write("█", row + 1, col + 1);
+                    line += "█";
 
                 }
-                /*else
+                else
                 {
-                    Write(" ", row + 1, col + 1);
-                }*/
+                    line += " ";
+                }
             }
+            Write(line, row + 1, 1);
         }
     }
 
@@ -325,23 +328,27 @@ class Program
     {
         for (int row = 0; row < CurrentFigure.GetLength(0); row++)
         {
+            string line = "";
             for (int col = 0; col < CurrentFigure.GetLength(1); col++)
             {
                 if (CurrentFigure[row, col])
                 {
-                    Write("█", CurrentFigureRow + row + 1, CurrentFigureCol + col + 1, ConsoleColor.DarkRed);
+                    line += "█";
+                }
+                else
+                {
+                    line += " ";
                 }
             }
+            Write(line, row + 1 + CurrentFigureRow, CurrentFigureCol + 1);
         }
     }
 
 
-    static void Write(string text, int row, int col, ConsoleColor color = ConsoleColor.Yellow)
+    static void Write(string text, int row, int col)
     {
-        Console.ForegroundColor = color;
         Console.SetCursorPosition(col, row);
         Console.Write(text);
-        Console.ResetColor();
     }
 }
 
