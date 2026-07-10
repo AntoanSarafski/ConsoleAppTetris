@@ -131,7 +131,7 @@ class Program
 
             }
 
-            if (Collision())
+            if (Collision(CurrentFigure))
             {
                 AddCurrentFigureToTetrisField();
                 int lines = CheckForFullLines();
@@ -140,7 +140,7 @@ class Program
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 CurrentFigureRow = 0;
                 CurrentFigureCol = 0;
-                if (Collision())
+                if (Collision(CurrentFigure))
                 {
                     File.AppendAllLines(ScoresFileName, new List<string>
                     {
@@ -181,7 +181,10 @@ class Program
             }
         }
 
-        CurrentFigure = newFigure;
+        if (!Collision(newFigure))
+        {
+            CurrentFigure = newFigure;
+        }
     }
 
     private static int CheckForFullLines() // 1, 2, 3, 4
@@ -234,19 +237,24 @@ class Program
         //TetrisField
     }
 
-    static bool Collision()
+    static bool Collision(bool[,] figure)
     {
-        // TODO: Collide with existing figure
-        if (CurrentFigureRow + CurrentFigure.GetLength(0) == TetrisRows)
+
+        if (CurrentFigureCol > TetrisCols - figure.GetLength(1))
         {
             return true;
         }
 
-        for (int row = 0; row < CurrentFigure.GetLength(0); row++)
+        if (CurrentFigureRow + figure.GetLength(0) == TetrisRows)
         {
-            for (int col = 0; col < CurrentFigure.GetLength(1); col++)
+            return true;
+        }
+
+        for (int row = 0; row < figure.GetLength(0); row++)
+        {
+            for (int col = 0; col < figure.GetLength(1); col++)
             {
-                if (CurrentFigure[row, col] && 
+                if (figure[row, col] && 
                     TetrisField[CurrentFigureRow + row + 1, CurrentFigureCol + col])
                 {
                     return true;
