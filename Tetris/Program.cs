@@ -54,7 +54,8 @@ class Program
     static int HighScore = 0;
     static int Score = 0;
     static int Frame = 0;
-    static int FramesToMoveFigure = 15;
+    static int Level = 1;
+    static int FramesToMoveFigure = 16;
     static bool[,] CurrentFigure = null;
     static int CurrentFigureRow = 0;
     static int CurrentFigureCol = 0;
@@ -86,6 +87,7 @@ class Program
         while (true)
         {
             Frame++;
+            UpdateLevel();
 
             if (Console.KeyAvailable)
             {
@@ -113,7 +115,7 @@ class Program
                 if (key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.S)
                 {
                     Frame = 1;
-                    Score++;
+                    Score += Level;
                     CurrentFigureRow++;
 
                 }
@@ -124,7 +126,7 @@ class Program
 
             }
             // Update game state
-            if (Frame % FramesToMoveFigure == 0)
+            if (Frame % (FramesToMoveFigure - Level) == 0)
             {
                 CurrentFigureRow++;
                 Frame = 0;
@@ -135,7 +137,7 @@ class Program
             {
                 AddCurrentFigureToTetrisField();
                 int lines = CheckForFullLines();
-                Score += ScorePerLines[lines];
+                Score += ScorePerLines[lines] * Level;
 
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 CurrentFigureRow = 0;
@@ -167,6 +169,25 @@ class Program
             DrawTetrisField();
             DrawCurrentFigure();
             Thread.Sleep(40);
+        }
+    }
+
+    private static void UpdateLevel()
+    {
+        if (Score == 0)
+        {
+            Level = 1;
+            return;
+        }
+
+        Level = (int)Math.Log10(Score) - 1;
+        if (Level < 1)
+        {
+            Level = 1;
+        }
+        if (Level > 10)
+        {
+            Level = 10;
         }
     }
 
@@ -308,15 +329,16 @@ class Program
         {
             HighScore = Score;
         }
-
-        Write("Score:", 1, 3 + TetrisCols);
-        Write(Score.ToString(), 2, 3 + TetrisCols);
-        Write("Best:", 4, 3 + TetrisCols);
-        Write(HighScore.ToString(), 5, 3 + TetrisCols);
-        Write("Frame:", 7, 3 + TetrisCols);
-        Write(Frame.ToString(), 8, 3 + TetrisCols);
-        Write("Position:", 10, 3 + TetrisCols);
-        Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 11, 3 + TetrisCols);
+        Write("Level:", 1, 3 + TetrisCols);
+        Write($"{Level}", 2, 3 + TetrisCols);
+        Write("Score:", 4, 3 + TetrisCols);
+        Write(Score.ToString(), 5, 3 + TetrisCols);
+        Write("Best:", 6, 3 + TetrisCols);
+        Write(HighScore.ToString(), 7, 3 + TetrisCols);
+        Write("Frame:", 9, 3 + TetrisCols);
+        Write(Frame.ToString(), 10, 3 + TetrisCols);
+        //Write("Position:", 10, 3 + TetrisCols);
+        //Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 11, 3 + TetrisCols);
         Write("Keys:", 12, 3 + TetrisCols);
         Write(" ^ ".ToString(), 13, 3 + TetrisCols);
         Write("<v> ".ToString(), 14, 3 + TetrisCols);
