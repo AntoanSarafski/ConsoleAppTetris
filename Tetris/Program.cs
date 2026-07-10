@@ -112,15 +112,14 @@ class Program
                 }
                 if (key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.S)
                 {
-                    // Check if the current figure can move down
                     Frame = 1;
                     Score++;
                     CurrentFigureRow++;
 
                 }
-                if (key.Key == ConsoleKey.Spacebar || key.Key == ConsoleKey.UpArrow)
+                if (key.Key == ConsoleKey.Spacebar || key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.W)
                 {
-                    // TODO: Implement 90-degree rotation of the current figure
+                    RotateCurrentFigureOn90Degree();
                 }
 
             }
@@ -137,7 +136,6 @@ class Program
                 AddCurrentFigureToTetrisField();
                 int lines = CheckForFullLines();
                 Score += ScorePerLines[lines];
-                //if(lines remove) Score++;
 
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 CurrentFigureRow = 0;
@@ -172,7 +170,21 @@ class Program
         }
     }
 
-    static int CheckForFullLines() // 1, 2, 3, 4
+    private static void RotateCurrentFigureOn90Degree()
+    {
+        var newFigure = new bool[CurrentFigure.GetLength(1), CurrentFigure.GetLength(0)];
+        for (int row = 0; row < CurrentFigure.GetLength(0); row++)
+        {
+            for (int col = 0; col < CurrentFigure.GetLength(1); col++)
+            {
+                newFigure[col, CurrentFigure.GetLength(0) - row - 1] = CurrentFigure[row, col];
+            }
+        }
+
+        CurrentFigure = newFigure;
+    }
+
+    private static int CheckForFullLines() // 1, 2, 3, 4
     {
         int lines = 0;
         
