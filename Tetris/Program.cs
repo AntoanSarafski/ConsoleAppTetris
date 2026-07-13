@@ -2,7 +2,7 @@
 using System.Transactions;
 using Tetris;
 
-class Program
+public static class Program
 {
     // Settings for the Tetris game
 
@@ -52,17 +52,16 @@ class Program
 
     // State
     static TetrisGameState State = new TetrisGameState(TetrisRows, TetrisCols);
+    static ScoreManager ScoreManager = new ScoreManager("scores.txt");
     static Random Random = new Random();
 
 
-    static void Main(string[] args)
+    public static void Main()
     {
 
         var musicPlayer = new MusicPlayer();
         musicPlayer.Play();
 
-        var scoreManager = new ScoreManager("scores.txt");
-        State.HighScore = scoreManager.GetHighScore();
 
 
         Console.BackgroundColor = ConsoleColor.White;
@@ -107,6 +106,7 @@ class Program
                 {
                     State.Frame = 1;
                     State.Score += State.Level;
+                    ScoreManager.UpdateHighScore(State.Score);
                     State.CurrentFigureRow++;
 
                 }
@@ -129,13 +129,13 @@ class Program
                 AddCurrentFigureToTetrisField();
                 int lines = CheckForFullLines();
                 State.Score += ScorePerLines[lines] * State.Level;
-
+                ScoreManager.UpdateHighScore(State.Score);
                 State.CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 State.CurrentFigureRow = 0;
                 State.CurrentFigureCol = 0;
                 if (Collision(State.CurrentFigure)) // Game is over
                 {
-                    scoreManager.Add(State.Score);
+                    ScoreManager.Add(State.Score);
 
                     var scoreAsString = State.Score.ToString();
                     scoreAsString += new string(' ',4 - scoreAsString.Length);
@@ -297,16 +297,12 @@ class Program
 
     static void DrawInfo() 
     {
-        if(State.Score > State.HighScore)
-        {
-            State.HighScore = State.Score;
-        }
         Write("Level:", 1, 3 + TetrisCols);
         Write($"{State.Level}", 2, 3 + TetrisCols);
         Write("Score:", 4, 3 + TetrisCols);
         Write(State.Score.ToString(), 5, 3 + TetrisCols);
         Write("Best:", 6, 3 + TetrisCols);
-        Write(State.HighScore.ToString(), 7, 3 + TetrisCols);
+        Write(ScoreManager.HighScore.ToString(), 7, 3 + TetrisCols);
         Write("Frame:", 9, 3 + TetrisCols);
         Write(State.Frame.ToString(), 10, 3 + TetrisCols);
         //Write("Position:", 10, 3 + TetrisCols);

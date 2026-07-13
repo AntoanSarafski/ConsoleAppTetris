@@ -8,12 +8,26 @@ namespace Tetris
     public class ScoreManager
     {
         private readonly string highScoreFile;
+        
 
         public ScoreManager(string highScoreFile)
         {
             this.highScoreFile = highScoreFile;
+            this.HighScore = this.GetHighScore();
         }
-        public int GetHighScore() 
+
+        public int HighScore { get; set; }
+
+        public void UpdateHighScore(int highScoreCandidate)
+        {
+            if (highScoreCandidate > this.HighScore)
+            {
+                this.HighScore = highScoreCandidate;
+                // this.Add(highScoreCandidate);
+            }
+        }
+
+        private int GetHighScore() 
         {
             var highScore = 0;
             if (File.Exists(this.highScoreFile))

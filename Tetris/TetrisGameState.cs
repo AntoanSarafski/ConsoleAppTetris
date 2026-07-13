@@ -9,7 +9,6 @@ namespace Tetris
 
         public TetrisGameState(int tetrisRows, int tetrisColumns)
         {
-              this.HighScore = 0;
               this.Score = 0;
               this.Frame = 0;
               this.Level = 1;
@@ -20,11 +19,10 @@ namespace Tetris
               this.TetrisField = new bool[tetrisRows, tetrisColumns];
         }
 
-        public int HighScore { get; set; }
         public int Score { get; set; }
         public int Frame { get; set; }
         public int Level { get; private set; }
-        public int FramesToMoveFigure  { get; set; }
+        public int FramesToMoveFigure  { get; private set; }
         public bool[,] CurrentFigure { get; set; }
         public int CurrentFigureRow { get; set; }
         public int CurrentFigureCol { get; set; }
