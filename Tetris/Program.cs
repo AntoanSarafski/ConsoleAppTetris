@@ -47,7 +47,6 @@ class Program
                     { true, true, true }
                 }
         };
-    static string ScoresFileName = "scores.txt";
     static int[] ScorePerLines = { 0, 40, 100, 300, 1200 }; // Score for clearing 0, 1, 2, 3, or 4 lines
 
 
@@ -70,15 +69,10 @@ class Program
         var musicPlayer = new MusicPlayer();
         musicPlayer.Play();
 
-        if (File.Exists(ScoresFileName))
-        {
-            var allScores = File.ReadAllLines(ScoresFileName);
-            foreach(var score in allScores)
-            {
-                var match = Regex.Match(score, @" => (?<score>[0-9]+)");
-                HighScore = Math.Max(HighScore, int.Parse(match.Groups["score"].Value));
-            }
-        }
+        var scoreManager = new ScoreManager("scores.txt");
+        HighScore = scoreManager.GetHighScore();
+
+
         Console.BackgroundColor = ConsoleColor.White;
         Console.ForegroundColor = ConsoleColor.Black;
         Console.Title = "Tetris v1.0";
@@ -147,12 +141,10 @@ class Program
                 CurrentFigure = TetrisFigures[Random.Next(0, TetrisFigures.Count)];
                 CurrentFigureRow = 0;
                 CurrentFigureCol = 0;
-                if (Collision(CurrentFigure))
+                if (Collision(CurrentFigure)) // Game is over
                 {
-                    File.AppendAllLines(ScoresFileName, new List<string>
-                    {
-                        $"[{DateTime.Now.ToString()}] {Environment.UserName} => {Score}"
-                    });
+                    scoreManager.Add(Score);
+
                     var scoreAsString = Score.ToString();
                     scoreAsString += new string(' ',4 - scoreAsString.Length);
                     Write("╔════════════╗", 5, 5);
