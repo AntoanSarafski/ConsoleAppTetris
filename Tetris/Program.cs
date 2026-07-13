@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Transactions;
+using Tetris;
 
 class Program
 {
@@ -66,6 +67,9 @@ class Program
     static void Main(string[] args)
     {
 
+        var musicPlayer = new MusicPlayer();
+        musicPlayer.Play();
+
         if (File.Exists(ScoresFileName))
         {
             var allScores = File.ReadAllLines(ScoresFileName);
@@ -75,7 +79,8 @@ class Program
                 HighScore = Math.Max(HighScore, int.Parse(match.Groups["score"].Value));
             }
         }
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.ForegroundColor = ConsoleColor.Black;
         Console.Title = "Tetris v1.0";
         Console.CursorVisible = false;
         Console.WindowHeight = ConsoleRows + 1;
