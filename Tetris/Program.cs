@@ -62,6 +62,8 @@ public static class Program
         var musicPlayer = new MusicPlayer();
         musicPlayer.Play();
 
+        var tetrisConsoleWriter = new TetrisConsoleWriter();
+
 
 
         Console.BackgroundColor = ConsoleColor.White;
@@ -136,15 +138,7 @@ public static class Program
                 if (Collision(State.CurrentFigure)) // Game is over
                 {
                     ScoreManager.Add(State.Score);
-
-                    var scoreAsString = State.Score.ToString();
-                    scoreAsString += new string(' ',4 - scoreAsString.Length);
-                    Write("╔════════════╗", 5, 5);
-                    Write("║  Game      ║", 6, 5);
-                    Write("║   Over!    ║", 7, 5);
-                    Write("║Score:      ║", 8, 5);
-                    Write($"║ {scoreAsString}       ║", 9, 5);
-                    Write("╚════════════╝", 10, 5);
+                    tetrisConsoleWriter.WriteGameOver(State.Score, TetrisRows / 2 - 3, (TetrisCols + 3 + InfoCols) / 2 -6);
                     Thread.Sleep(100000);
                     return;
                 }
@@ -153,10 +147,10 @@ public static class Program
 
             // redraw UI
 
-            DrawBorder(); 
-            DrawInfo();
-            DrawTetrisField();
-            DrawCurrentFigure();
+            tetrisConsoleWriter.DrawBorder(TetrisCols, TetrisRows, InfoCols);
+            tetrisConsoleWriter.DrawGameState(3 + TetrisCols, State, ScoreManager.HighScore);
+            tetrisConsoleWriter.DrawTetrisField(State.TetrisField);
+            tetrisConsoleWriter.DrawCurrentFigure(State.CurrentFigure, State.CurrentFigureRow, State.CurrentFigureCol);
             Thread.Sleep(40);
         }
     }
@@ -258,102 +252,10 @@ public static class Program
         return false;
     }
 
-    static void DrawBorder()
-    {
-        Console.SetCursorPosition(0, 0);
-        string line = "╔";
-        line += new string('═', TetrisCols);
-
-        /*for (int i = 0; i < TetrisCols; i++)
-        {
-            line += "═";
-        }*/
-
-        line += "╦";
-        line += new string('═', InfoCols);
-        line += "╗";
-
-        Console.Write(line);
-
-        for (int i = 0; i < TetrisRows; i++)
-        {
-            string middleLIne = "║";
-            middleLIne += new string(' ', TetrisCols);
-            middleLIne += "║";
-            middleLIne += new string(' ', InfoCols);
-            middleLIne += "║";
-            Console.Write(middleLIne);
-        }
-
-        string endLine = "╚";
-        endLine += new string('═', TetrisCols);
-        endLine += "╩";
-        endLine += new string('═', InfoCols);
-        endLine += "╝";
-        Console.Write(endLine);
+   
+    
 
 
-    }
-
-    static void DrawInfo() 
-    {
-        Write("Level:", 1, 3 + TetrisCols);
-        Write($"{State.Level}", 2, 3 + TetrisCols);
-        Write("Score:", 4, 3 + TetrisCols);
-        Write(State.Score.ToString(), 5, 3 + TetrisCols);
-        Write("Best:", 6, 3 + TetrisCols);
-        Write(ScoreManager.HighScore.ToString(), 7, 3 + TetrisCols);
-        Write("Frame:", 9, 3 + TetrisCols);
-        Write(State.Frame.ToString(), 10, 3 + TetrisCols);
-        //Write("Position:", 10, 3 + TetrisCols);
-        //Write($"{CurrentFigureRow}, {CurrentFigureCol}".ToString(), 11, 3 + TetrisCols);
-        Write("Keys:", 12, 3 + TetrisCols);
-        Write(" ^ ".ToString(), 13, 3 + TetrisCols);
-        Write("<v> ".ToString(), 14, 3 + TetrisCols);
-
-    }
-
-    static void DrawTetrisField()
-    {
-        for (int row = 0; row < TetrisRows; row++)
-        {
-            string line = "";
-            for (int col = 0; col < TetrisCols; col++)
-            {
-                if (State.TetrisField[row, col])
-                {
-                    line += "█";
-
-                }
-                else
-                {
-                    line += " ";
-                }
-            }
-            Write(line, row + 1, 1);
-        }
-    }
-
-    static void DrawCurrentFigure()
-    {
-        for (int row = 0; row < State.CurrentFigure.GetLength(0); row++)
-        {
-            for (int col = 0; col < State.CurrentFigure.GetLength(1); col++)
-            {
-                if (State.CurrentFigure[row, col])
-                {
-                    Write("█", row + 1 + State.CurrentFigureRow, 1 + State.CurrentFigureCol + col);
-                }
-            }
-        }
-    }
-
-
-    static void Write(string text, int row, int col)
-    {
-        Console.SetCursorPosition(col, row);
-        Console.Write(text);
-    }
 }
 
 
